@@ -1,21 +1,18 @@
+from pathlib import Path
+
 from app.ingestion.document_processor import DocumentProcessor
 
 
 def main():
+    file_path = Path("data/sample_hlds/Vehicle_Control_HLD_v1.pdf")
 
-    file_path = "data/sample_hlds/test_hld.pdf"
+    if not file_path.exists():
+        raise FileNotFoundError(
+            f"Required test document was not found: {file_path}"
+        )
 
     processor = DocumentProcessor()
-
-    try:
-        result = processor.process(file_path)
-
-    except FileNotFoundError:
-        print(
-            "\nTEST PDF NOT FOUND\n"
-            "Place test_hld.pdf inside data/sample_hlds/"
-        )
-        return
+    result = processor.process(str(file_path))
 
     document = result["document"]
     chunks = result["chunks"]
@@ -27,16 +24,19 @@ def main():
     print("File:", document.filename)
     print("Pages:", document.page_count)
     print("Extraction:", document.extraction_method)
+    print("Total chunks:", len(chunks))
 
-    print("\nTotal chunks:", len(chunks))
+    # Basic verification
+    assert document.filename == "Vehicle_Control_HLD_v1.pdf"
+    assert document.page_count > 0
+    assert len(document.full_text.strip()) > 0
+    assert len(chunks) > 0
 
     if chunks:
-
         first = chunks[0]
 
         print("\nFIRST CHUNK")
         print("------------------------------")
-
         print("Chunk ID:", first.chunk_id)
         print("Page:", first.page_number)
         print("Section:", first.section)
