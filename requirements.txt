@@ -1,0 +1,14 @@
+pymupdf==1.28.2
+pdfplumber
+pydantic==2.13.5
+sentence-transformers==6.1.0
+chromadb==1.5.9
+networkx==3.7
+streamlit==1.65.0
+ollama
+reportlab==5.0.1
+pytesseract==0.3.13
+Pillow==12.3.0
+fastapi
+uvicorn
+python-multipart

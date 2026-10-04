@@ -1,0 +1,444 @@
+{
+  "dataset_name": "Synthetic AUTOSAR HLD Evaluation Corpus",
+  "purpose": "Controlled evaluation data for the AUTOSAR HLD Document Analysis Assistant.",
+  "documents": {
+    "Vehicle_Control_HLD_v1.pdf": {
+      "document_id": "HLD-VCS-001",
+      "version": "1.0",
+      "system": "Vehicle Control System",
+      "components": [
+        {
+          "name": "WheelSpeedSensor",
+          "description": "Acquires wheel-speed information and provides vehicle speed data."
+        },
+        {
+          "name": "VehicleSpeedController",
+          "description": "Processes wheel-speed information and calculates validated vehicle speed."
+        },
+        {
+          "name": "InstrumentCluster",
+          "description": "Displays validated vehicle speed to the driver."
+        }
+      ],
+      "interfaces": [
+        {
+          "name": "WheelSpeedInterface",
+          "provider": "WheelSpeedSensor",
+          "consumer": "VehicleSpeedController"
+        },
+        {
+          "name": "VehicleSpeedInterface",
+          "provider": "VehicleSpeedController",
+          "consumer": "InstrumentCluster"
+        }
+      ],
+      "ports": [
+        {
+          "component": "WheelSpeedSensor",
+          "name": "WheelSpeedOut",
+          "type": "P-Port",
+          "interface": "WheelSpeedInterface"
+        },
+        {
+          "component": "VehicleSpeedController",
+          "name": "WheelSpeedIn",
+          "type": "R-Port",
+          "interface": "WheelSpeedInterface"
+        },
+        {
+          "component": "VehicleSpeedController",
+          "name": "VehicleSpeedOut",
+          "type": "P-Port",
+          "interface": "VehicleSpeedInterface"
+        },
+        {
+          "component": "InstrumentCluster",
+          "name": "VehicleSpeedIn",
+          "type": "R-Port",
+          "interface": "VehicleSpeedInterface"
+        }
+      ],
+      "signals": [
+        {
+          "name": "WheelSpeed",
+          "interface": "WheelSpeedInterface",
+          "unit": "km/h"
+        },
+        {
+          "name": "VehicleSpeed",
+          "interface": "VehicleSpeedInterface",
+          "unit": "km/h"
+        }
+      ],
+      "dependencies": [
+        [
+          "VehicleSpeedController",
+          "WheelSpeedSensor"
+        ],
+        [
+          "InstrumentCluster",
+          "VehicleSpeedController"
+        ]
+      ],
+      "known_issues": []
+    },
+    "Vehicle_Control_HLD_v2.pdf": {
+      "document_id": "HLD-VCS-001",
+      "version": "2.0",
+      "system": "Vehicle Control System",
+      "components": [
+        {
+          "name": "WheelSpeedSensor",
+          "description": "Acquires wheel-speed information."
+        },
+        {
+          "name": "VehicleSpeedController",
+          "description": "Processes wheel-speed information and calculates validated vehicle speed."
+        },
+        {
+          "name": "InstrumentCluster",
+          "description": "Displays validated vehicle speed."
+        },
+        {
+          "name": "DiagnosticsManager",
+          "description": "Monitors vehicle-speed plausibility and diagnostic status."
+        }
+      ],
+      "interfaces": [
+        {
+          "name": "WheelSpeedInterface",
+          "provider": "WheelSpeedSensor",
+          "consumer": "VehicleSpeedController"
+        },
+        {
+          "name": "VehicleSpeedInterface",
+          "provider": "VehicleSpeedController",
+          "consumer": "InstrumentCluster"
+        },
+        {
+          "name": "DiagnosticStatusInterface",
+          "provider": "VehicleSpeedController",
+          "consumer": "DiagnosticsManager"
+        }
+      ],
+      "ports": [
+        {
+          "component": "WheelSpeedSensor",
+          "name": "WheelSpeedOut",
+          "type": "P-Port",
+          "interface": "WheelSpeedInterface"
+        },
+        {
+          "component": "VehicleSpeedController",
+          "name": "WheelSpeedIn",
+          "type": "R-Port",
+          "interface": "WheelSpeedInterface"
+        },
+        {
+          "component": "VehicleSpeedController",
+          "name": "VehicleSpeedOut",
+          "type": "P-Port",
+          "interface": "VehicleSpeedInterface"
+        },
+        {
+          "component": "InstrumentCluster",
+          "name": "VehicleSpeedIn",
+          "type": "R-Port",
+          "interface": "VehicleSpeedInterface"
+        },
+        {
+          "component": "DiagnosticsManager",
+          "name": "DiagnosticStatusIn",
+          "type": "R-Port",
+          "interface": "DiagnosticStatusInterface"
+        }
+      ],
+      "signals": [
+        {
+          "name": "Wheel_Speed",
+          "interface": "WheelSpeedInterface",
+          "unit": "km/h"
+        },
+        {
+          "name": "VehicleSpeed",
+          "interface": "VehicleSpeedInterface",
+          "unit": "km/h"
+        },
+        {
+          "name": "DiagnosticStatus",
+          "interface": "DiagnosticStatusInterface",
+          "unit": "enum"
+        }
+      ],
+      "dependencies": [
+        [
+          "VehicleSpeedController",
+          "WheelSpeedSensor"
+        ],
+        [
+          "InstrumentCluster",
+          "VehicleSpeedController"
+        ],
+        [
+          "DiagnosticsManager",
+          "VehicleSpeedController"
+        ]
+      ],
+      "known_issues": [
+        {
+          "issue_id": "VCS-V2-001",
+          "type": "signal_revision_mismatch",
+          "description": "WheelSpeed in version 1.0 is named Wheel_Speed in version 2.0.",
+          "severity": "medium"
+        },
+        {
+          "issue_id": "VCS-V2-002",
+          "type": "missing_provider_port",
+          "description": "DiagnosticStatusInterface is consumed by DiagnosticsManager but no corresponding provider P-Port is declared.",
+          "severity": "high"
+        }
+      ]
+    },
+    "Braking_System_HLD.pdf": {
+      "document_id": "HLD-BRK-001",
+      "version": "1.0",
+      "system": "Braking System",
+      "components": [
+        {
+          "name": "BrakePedalSensor",
+          "description": "Measures brake-pedal demand."
+        },
+        {
+          "name": "BrakeController",
+          "description": "Calculates requested braking command."
+        },
+        {
+          "name": "BrakeActuator",
+          "description": "Executes the braking command."
+        }
+      ],
+      "interfaces": [
+        {
+          "name": "BrakePedalInterface",
+          "provider": "BrakePedalSensor",
+          "consumer": "BrakeController"
+        },
+        {
+          "name": "BrakeCommandInterface",
+          "provider": "BrakeController",
+          "consumer": "BrakeActuator"
+        }
+      ],
+      "ports": [
+        {
+          "component": "BrakePedalSensor",
+          "name": "BrakePedalOut",
+          "type": "P-Port",
+          "interface": "BrakePedalInterface"
+        },
+        {
+          "component": "BrakeController",
+          "name": "BrakePedalIn",
+          "type": "R-Port",
+          "interface": "BrakePedalInterface"
+        },
+        {
+          "component": "BrakeController",
+          "name": "BrakeCommandOut",
+          "type": "P-Port",
+          "interface": "BrakeCommandInterface"
+        },
+        {
+          "component": "BrakeActuator",
+          "name": "BrakeCommandIn",
+          "type": "R-Port",
+          "interface": "BrakeCommandInterface"
+        }
+      ],
+      "signals": [
+        {
+          "name": "BrakePedalPosition",
+          "interface": "BrakePedalInterface",
+          "unit": "%"
+        },
+        {
+          "name": "BrakeCommand",
+          "interface": "BrakeCommandInterface",
+          "unit": "%"
+        }
+      ],
+      "dependencies": [
+        [
+          "BrakeController",
+          "BrakePedalSensor"
+        ],
+        [
+          "BrakeActuator",
+          "BrakeController"
+        ]
+      ],
+      "known_issues": []
+    },
+    "Door_Control_HLD.pdf": {
+      "document_id": "HLD-DOOR-001",
+      "version": "1.0",
+      "system": "Door Control System",
+      "components": [
+        {
+          "name": "DoorSwitch",
+          "description": "Provides the driver door-lock request."
+        },
+        {
+          "name": "DoorController",
+          "description": "Processes door-lock requests."
+        },
+        {
+          "name": "DoorLockActuator",
+          "description": "Controls physical door locking."
+        }
+      ],
+      "interfaces": [
+        {
+          "name": "DoorRequestInterface",
+          "provider": "DoorSwitch",
+          "consumer": "DoorController"
+        },
+        {
+          "name": "DoorLockInterface",
+          "provider": "DoorController",
+          "consumer": "DoorLockActuator"
+        }
+      ],
+      "ports": [
+        {
+          "component": "DoorSwitch",
+          "name": "DoorRequestOut",
+          "type": "P-Port",
+          "interface": "DoorRequestInterface"
+        },
+        {
+          "component": "DoorController",
+          "name": "DoorRequestIn",
+          "type": "R-Port",
+          "interface": "DoorRequestInterface"
+        },
+        {
+          "component": "DoorLockActuator",
+          "name": "DoorLockCommandIn",
+          "type": "R-Port",
+          "interface": "DoorLockInterface"
+        }
+      ],
+      "signals": [
+        {
+          "name": "DoorLockRequest",
+          "interface": "DoorRequestInterface",
+          "unit": "boolean"
+        },
+        {
+          "name": "DoorLockCommand",
+          "interface": "DoorLockInterface",
+          "unit": "boolean"
+        }
+      ],
+      "dependencies": [
+        [
+          "DoorController",
+          "DoorSwitch"
+        ],
+        [
+          "DoorLockActuator",
+          "DoorController"
+        ]
+      ],
+      "known_issues": [
+        {
+          "issue_id": "DOOR-001",
+          "type": "missing_provider_port",
+          "description": "DoorLockInterface is consumed by DoorLockActuator but DoorController has no declared provider P-Port for it.",
+          "severity": "high"
+        }
+      ]
+    },
+    "Body_Control_HLD.pdf": {
+      "document_id": "HLD-BCM-001",
+      "version": "1.0",
+      "system": "Body Control System",
+      "components": [
+        {
+          "name": "LightSwitch",
+          "description": "Provides lighting requests."
+        },
+        {
+          "name": "BodyControlManager",
+          "description": "Coordinates body-electronics functions."
+        },
+        {
+          "name": "ExteriorLightController",
+          "description": "Controls exterior vehicle lights."
+        }
+      ],
+      "interfaces": [
+        {
+          "name": "LightRequestInterface",
+          "provider": "LightSwitch",
+          "consumer": "BodyControlManager"
+        },
+        {
+          "name": "ExteriorLightInterface",
+          "provider": "BodyControlManager",
+          "consumer": "ExteriorLightController"
+        }
+      ],
+      "ports": [
+        {
+          "component": "LightSwitch",
+          "name": "LightRequestOut",
+          "type": "P-Port",
+          "interface": "LightRequestInterface"
+        },
+        {
+          "component": "BodyControlManager",
+          "name": "LightRequestIn",
+          "type": "R-Port",
+          "interface": "LightRequestInterface"
+        },
+        {
+          "component": "BodyControlManager",
+          "name": "ExteriorLightOut",
+          "type": "P-Port",
+          "interface": "ExteriorLightInterface"
+        },
+        {
+          "component": "ExteriorLightController",
+          "name": "ExteriorLightIn",
+          "type": "R-Port",
+          "interface": "ExteriorLightInterface"
+        }
+      ],
+      "signals": [
+        {
+          "name": "LightRequest",
+          "interface": "LightRequestInterface",
+          "unit": "enum"
+        },
+        {
+          "name": "ExteriorLightCommand",
+          "interface": "ExteriorLightInterface",
+          "unit": "enum"
+        }
+      ],
+      "dependencies": [
+        [
+          "BodyControlManager",
+          "LightSwitch"
+        ],
+        [
+          "ExteriorLightController",
+          "BodyControlManager"
+        ]
+      ],
+      "known_issues": []
+    }
+  }
+}
