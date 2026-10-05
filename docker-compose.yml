@@ -1,0 +1,30 @@
+services:
+  api:
+    build: .
+    container_name: autosar-hld-api
+    command: >
+      uvicorn app.api.main:app
+      --host 0.0.0.0
+      --port 8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - autosar-data:/app/data
+
+  ui:
+    build: .
+    container_name: autosar-hld-ui
+    command: >
+      streamlit run streamlit_app.py
+      --server.address=0.0.0.0
+      --server.port=8501
+      --server.headless=true
+    ports:
+      - "8501:8501"
+    volumes:
+      - autosar-data:/app/data
+    depends_on:
+      - api
+
+volumes:
+  autosar-data:

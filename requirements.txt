@@ -12,3 +12,4 @@ Pillow==12.3.0
 fastapi
 uvicorn
 python-multipart
+torchvision
