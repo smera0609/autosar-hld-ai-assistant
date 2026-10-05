@@ -51,3 +51,10 @@ dist/
 # Project-specific confidential/reference material
 Automotive_Engineering_AI_Project_Case_Studies.pdf
 *Case_Studies*.pdf
+
+# Official/public AUTOSAR reference artifacts - download separately
+data/public_autosar/AUTOSAR_WorkflowExample/
+
+# macOS archive metadata
+__MACOSX/
+**/__MACOSX/
