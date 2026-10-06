@@ -39,7 +39,7 @@ from app.ingestion.document_processor import DocumentProcessor
 
 
 
-from app.extraction.pdf_architecture_extractor import PDFArchitectureExtractor
+from app.extraction.adaptive_architecture_extractor import AdaptiveArchitectureExtractor
 
 from app.extraction.functional_flow_extractor import FunctionalFlowExtractor
 
@@ -62,6 +62,7 @@ from app.rag.retriever import HLDRetriever
 
 
 from app.rag.answer_engine import GroundedAnswerEngine
+from app.rag.architecture_query_router import ArchitectureQueryRouter
 
 
 
@@ -964,7 +965,7 @@ if analyse_button:
 
 
 
-                extractor = PDFArchitectureExtractor()
+                extractor = AdaptiveArchitectureExtractor()
 
 
 
@@ -3022,23 +3023,11 @@ with qa_tab:
 
     st.write(
 
-
-
         "Ask natural-language questions about "
-
-
-
         "the uploaded architecture document. "
-
-
-
-        "Answers are generated only from "
-
-
-
-        "retrieved HLD evidence."
-
-
+        "Answers are grounded in extracted "
+        "architecture facts or retrieved "
+        "HLD evidence."
 
     )
 
@@ -3110,194 +3099,74 @@ with qa_tab:
 
     if ask_button:
 
-
-
-
-
-
-
         if not question.strip():
 
-
-
-
-
-
-
             st.warning(
-
-
-
                 "Enter a question first."
-
-
-
             )
-
-
-
-
-
-
 
         else:
 
-
-
-
-
-
-
             with st.spinner(
-
-
-
-                "Retrieving HLD evidence "
-
-
-
-                "and generating answer..."
-
-
-
+                "Analyzing architecture and "
+                "retrieving HLD evidence..."
             ):
-
-
-
-
-
-
 
                 try:
 
+                    # First try deterministic structured
+                    # architecture answering.
+                    router = ArchitectureQueryRouter()
 
-
-
-
-
-
-                    vector_store = HLDVectorStore()
-
-
-
-
-
-
-
-                    retriever = HLDRetriever(
-
-
-
-                        vector_store=vector_store
-
-
-
+                    structured_answer = router.answer(
+                        question=question,
+                        architecture=architecture,
                     )
 
+                    if structured_answer is not None:
 
+                        from app.rag.answer_engine import GroundedAnswer
 
-
-
-
-
-                    llm = OllamaProvider(
-
-
-
-                        model="qwen3:4b-instruct"
-
-
-
-                    )
-
-
-
-
-
-
-
-                    answer_engine = (
-
-
-
-                        GroundedAnswerEngine(
-
-
-
-                            retriever=retriever,
-
-
-
-                            llm_provider=llm,
-
-
-
+                        result = GroundedAnswer(
+                            question=question,
+                            answer=structured_answer,
+                            citations=[],
+                            mode="architecture-model",
+                            prompt="",
                         )
 
+                    else:
 
+                        # Fall back to the existing RAG pipeline
+                        # for descriptive/free-form questions.
+                        vector_store = HLDVectorStore()
 
-                    )
+                        retriever = HLDRetriever(
+                            vector_store=vector_store
+                        )
 
+                        llm = OllamaProvider(
+                            model="qwen3:4b-instruct"
+                        )
 
+                        answer_engine = GroundedAnswerEngine(
+                            retriever=retriever,
+                            llm_provider=llm,
+                        )
 
-
-
-
-
-                    result = answer_engine.answer(
-
-
-
-                        question=question,
-
-
-
-                        filename=display_filename,
-
-
-
-                        top_k=3,
-
-
-
-                    )
-
-
-
-
-
-
+                        result = answer_engine.answer(
+                            question=question,
+                            filename=display_filename,
+                            top_k=3,
+                        )
 
                     st.session_state.last_answer = result
 
-
-
-
-
-
-
                 except Exception as exc:
 
-
-
-
-
-
-
                     st.error(
-
-
-
                         f"Question answering failed: {exc}"
-
-
-
                     )
-
-
-
-
-
 
 
     result = st.session_state.last_answer
@@ -5284,7 +5153,7 @@ with comparison_tab:
 
 
 
-                        PDFArchitectureExtractor()
+                        AdaptiveArchitectureExtractor()
 
 
 

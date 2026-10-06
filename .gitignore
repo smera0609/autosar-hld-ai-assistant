@@ -58,3 +58,17 @@ data/public_autosar/AUTOSAR_WorkflowExample/
 # macOS archive metadata
 __MACOSX/
 **/__MACOSX/
+
+# Generated RAG / Chroma test stores
+data/long_hld_test_store/
+data/rag_100page_test/
+data/rag_100page_vehicle_test/
+
+# Local backup / migration files
+streamlit_app_BACKUP.py
+streamlit_app_BEFORE_ROUTER.py
+apply_router_update.py
+
+# Python cache
+__pycache__/
+*.pyc
